@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import './PokeFetch.css';
-import Timer from '../Timer';
+// import Timer from '../Timer';
 
 
 class PokeFetch extends Component {
@@ -10,9 +10,7 @@ class PokeFetch extends Component {
       pokeInfo: '',
       pokeSprite: '',
       pokeName: '',
-      // time: 0,
-      // isOn: false,
-      // start: 0,
+      count: 0,
       brightness: 0
     }
   }
@@ -25,59 +23,75 @@ class PokeFetch extends Component {
       method: 'GET'
     }).then(res => res.json())
       .then(res => {
-        // this.timer()
         this.setState({
           pokeInfo: res,
           pokeSprite: res.sprites.front_default,
           pokeName: res.species.name,
+          count: 10
         })
+        this.startTimer()
       })
       .catch((err) => console.log(err))
   }
 
-  // componentDidMount() {
-  //   console.log('componentDidMount');
-  //   this.timer = setTimeout(() => {this.state, 10000})
-  // }
+  componentDidMount() {
+    console.log('componentDidMount');
+    // this.timer = setTimeout(() => {this.state, 10000})
+  }
 
   // componentWillUnmount() {
   //   clearInterval(this.timer)
   //   console.log(timer);
   // }
 
-//   startTimer = (i) => {
-//     // this.setState({timeRemaining: this.state.timeRemaining -1})
-//     console.log(this.state);
-//     this.setState({
-//       isOn: true,
-//       time: this.state.time,
-//       start: Date.now() - this.state.time
-//     })
-//     this.timer = setInterval(() => this.setState({
-//       time: Date.now() - this.state.start
-//     }), 1)
-//     // setInterval(function(){
-//     // if(this.state.timeRemaining <= 0){
-//     //     clearInterval();
-//     // } else {
-//     //     document.getElementById("progressBar").value = 10 - this.state.timeRemaining;
-//     //     this.state.timeRemaining -= 1;
-//     // }}, 1000);
-//     // console.log(this.state.timeRemaining);
-// }  
+  startTimer = () => {
+    // this.setState({timeRemaining: this.state.timeRemaining -1})
+    console.log(this.state);
 
-//   resetTimer = (x) => {
-//     this.setState({time: 0, isOn: false})
-//   }
+    let timer = setInterval(() => {
+      if(this.state.count > 0){
+        this.setState(prevState => ({
+          count: prevState.count - 1
+        }))
+      } else {
+        clearInterval(timer)
+      }
+    }, 1000);
+
+
+
+    //attempt 3:
+    // this.setState({
+    //   isOn: true,
+    //   time: this.state.time,
+    //   start: Date.now() - this.state.time
+    // })
+    // this.timer = setInterval(() => this.setState({
+    //   time: Date.now() - this.state.start
+    // }), 1)
+
+    // Attempt 2:
+    // setInterval(function(){
+    // if(this.state.timeRemaining <= 0){
+    //     clearInterval();
+    // } else {
+    //     document.getElementById("progressBar").value = 10 - this.state.timeRemaining;
+    //     this.state.timeRemaining -= 1;
+    // }}, 1000);
+    console.log(this.state.time);
+}  
+
+  // resetTimer = (x) => {
+  //   this.setState({time: 0, isOn: false})
+  // }
 
   render() {
     return (
       <div className={'wrapper'}>
         <button className={'start'} onClick={() => this.fetchPokemon() && this.startTimer()}>Start!</button>
-        {/* <h1 className={'timer'} >{timer}</h1> */}
-        <Timer />
+        <h1 className={'timer'} >{this.state.count}</h1>
         <div className={'pokeWrap'}>
-          {/* {timer ? (
+          {this.state.count >0 ? (
           <>
           <img className={'pokeImgDark'} src={this.state.pokeSprite} />
           </>
@@ -88,11 +102,7 @@ class PokeFetch extends Component {
           <h1 className={'pokeName'}>{this.state.pokeName}</h1>
           </>
           )
-          } */}
-          <> 
-          <img className={'pokeImg'} src={this.state.pokeSprite} />
-          <h1 className={'pokeName'}>{this.state.pokeName}</h1>
-          </>
+          }
         </div>
       </div>
     )
